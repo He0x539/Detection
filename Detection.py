@@ -28,6 +28,7 @@ class Detection():
 
     def __init__(self, name):
         self.name = name
+
         self.LANGUAGE = None
         self.COUNTRY = None
         self.CITY = None
@@ -72,6 +73,8 @@ class Detection():
         self.category_index_CUSTOM = label_map_util.create_category_index(categories_CUSTOM)
 
         print('Loaded custom labels')
+        print('path: ' + PATH)
+        print('language: ' + self.LANGUAGE)
 
     def load_labels(self, NUM_CLASSES):
 
@@ -105,6 +108,41 @@ class Detection():
         print("Labels loaded")
         # return category_index
 
+    def load_layour(self):
+
+        print('Lang b4 naming: ' + self.LANGUAGE)
+        # define the window layout
+        if self.LANGUAGE == 'custom' or 'English':
+            nameOfApp = 'Object Detection Translator'
+            print('was eng/cust/none ' + nameOfApp)
+        if self.LANGUAGE == 'Spanish':
+            nameOfApp = 'Traductor de detección de objetos'
+        if self.LANGUAGE == 'Swedish':
+            nameOfApp = 'Objektigenkänningsöversättare'
+            print('was swedish ' + nameOfApp)
+
+        layout = [[sg.Text(nameOfApp, size=(40, 1), justification='center', font='Helvetica 20')],
+                  [sg.Text('User location: ' + self.COUNTRY + ' : ' + self.CITY, size=(40, 1), justification='center',
+                           font='Helvetica 20')],
+                  [sg.Text('Default language set to: ' + self.LANGUAGE, size=(40, 1), justification='center',
+                           font='Helvetica 20')],
+                  [sg.Image(filename='', key='image')],
+
+                  [sg.ReadButton('Swedish', size=(10, 1), font='Any 14', border_width=0),
+                   sg.RButton('English', size=(10, 1), font='Any 14', border_width=0),
+                   sg.RButton('Spanish', size=(10, 1), font='Any 14', border_width=0),
+                   sg.RButton('Browse', size=(10, 1), font='Any 14', border_width=0),
+                   sg.RButton('Exit', size=(10, 1), font='Helvetica 14', border_width=0)
+                   ]]
+
+        # pad=((200, 0), 3),
+
+        # create the window and show it without the plot
+        window = sg.Window(nameOfApp,
+                           location=(800, 400))
+        window.Layout(layout).Finalize()
+        return window
+
     def run_detection(self, PATH_TO_TENSORFLOW_MODEL, capture):
 
         # Load a (frozen) Tensorflow model into memory.
@@ -122,24 +160,7 @@ class Detection():
 
         sg.ChangeLookAndFeel('Black')
 
-        # define the window layout
-        layout = [[sg.Text('Object Detection Translator', size=(40, 1), justification='center', font='Helvetica 20')],
-                   [sg.Text('User location: ' + self.COUNTRY + ' : ' + self.CITY, size=(40, 1), justification='center', font='Helvetica 20')],
-                   [sg.Text('Default language set to: ' + self.LANGUAGE, size=(40, 1), justification='center', font='Helvetica 20')],
-                  [sg.Image(filename='', key='image')],
-
-                  [sg.ReadButton('Swedish', size=(10, 1), font='Any 14', border_width=0),
-                   sg.RButton('English', size=(10, 1), font='Any 14', border_width=0),
-                   sg.RButton('Spanish', size=(10, 1), font='Any 14', border_width=0),
-                   sg.RButton('Browse', size=(10, 1), font='Any 14', border_width=0),
-                   sg.RButton('Exit', size=(10, 1), font='Helvetica 14', border_width=0)
-                   ]]
-        # pad=((200, 0), 3),
-
-        # create the window and show it without the plot
-        window = sg.Window('Object Detection Translator',
-                           location=(800, 400))
-        window.Layout(layout).Finalize()
+        window = self.load_layour()
 
         ###############
 
@@ -155,7 +176,7 @@ class Detection():
                         category_index = self.category_index_SPA
                     elif self.LANGUAGE == 'Swedish':
                         category_index = self.category_index_SWE
-                    elif self.LANGUAGE == 'Custom':
+                    elif self.LANGUAGE == 'custom':
                         category_index = self.category_index_CUSTOM
 
                     ret, image_np = capture.read()
@@ -172,6 +193,7 @@ class Detection():
                         print(filename)
                         # window.Close()
                         self.load_custom_label(90, filename)
+                        print('lang = custom')
 
                     elif button == 'English':
                         self.LANGUAGE = 'English'
@@ -200,6 +222,7 @@ class Detection():
                         [boxes, scores, classes, num_detections],
                         feed_dict={image_tensor: image_np_expanded})
                     # Visualization of the results of a detection.
+
                     vis_util.visualize_boxes_and_labels_on_image_array(
                         image_np,
                         np.squeeze(boxes),
@@ -208,6 +231,7 @@ class Detection():
                         category_index,
                         use_normalized_coordinates=True,
                         line_thickness=4)
+
 
                     # gray = cv.cvtColor(image_np, cv.COLOR_BGR2GRAY)
                     # flip colors so that they are displayed correctly
