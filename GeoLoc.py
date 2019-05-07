@@ -4,7 +4,7 @@ import json
 class LanguageFetch:
 
     def __init__(self):
-        access_key = '2949d1223fe896b54cbffcc0aa0ec46d'
+        access_key = ''
         ip = urlopen('http://ip.42.pl/anything').read().decode('UTF-8') # test UK 185.86.151.11
         #ip = '185.86.151.11'
         webcall_str = "http://api.ipstack.com/" + ip + "?access_key=" + access_key
