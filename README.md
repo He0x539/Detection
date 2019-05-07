@@ -3,6 +3,7 @@ Real world object to text translator with location awareness. Supports several l
 Requires tensorflow-object detection folder to be placed inside the project.
 
 GeoLoc module - handles the retrieval of locational information
+  An accesskey is obtained from ipstack.com
 Detection/UI modules - main handler for the object detection
 Main - connects components and runs application
 
