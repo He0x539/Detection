@@ -1,9 +1,8 @@
 # Detection
 Real world object to text translator with location awareness. Supports several languages by default and also allows the user to import additional languages.
-Requires tensorflow-object detection folder to be placed inside the project.
+Requires tensorflow-object detection folder to be placed inside the project. An accesskey for ip-based location is obtained from ipstack.com.
 
 GeoLoc module - handles the retrieval of locational information
-  An accesskey is obtained from ipstack.com
 Detection/UI modules - main handler for the object detection
 Main - connects components and runs application
 
